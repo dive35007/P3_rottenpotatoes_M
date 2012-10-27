@@ -7,12 +7,23 @@ class MoviesController < ApplicationController
   end
 
   def index
-    sort = params[:sort] 
+    if params[:sort]
+      sort = params[:sort]
+    elsif session[:sort]
+      sort = session[:sort]
+      flash.keep
+      redirect_to movies_path(:sort => sort)
+    else
+      sort = nil
+    end
+      
     case sort
     when 'title'
       ordering,@title_header = {:order => :title}, 'hilite'
+      session[:sort] = sort
     when 'release_date'
       ordering,@date_header = {:order => :release_date}, 'hilite'
+      session[:sort] = sort
     end
     @all_ratings = Movie.all_ratings
     @selected_ratings = params[:ratings] || {}
