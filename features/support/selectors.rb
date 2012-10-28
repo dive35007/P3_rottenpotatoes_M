@@ -10,6 +10,16 @@ module HtmlSelectorsHelpers
   #
   # step definitions in web_steps.rb
   #
+  def select_date(dateX, options = {})  
+      raise ArgumentError, 'from is a required option' if options[:from].blank?
+      print dateX
+      field = options[:from]
+      date = Date.parse(dateX)
+      select date.year.to_s,               :from => "#{field}_1i"
+      select Date::MONTHNAMES[date.month], :from => "#{field}_2i"
+      select date.day.to_s,                :from => "#{field}_3i"
+  end
+  
   def selector_for(locator)
     case locator
 
