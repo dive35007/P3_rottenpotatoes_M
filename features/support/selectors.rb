@@ -12,7 +12,6 @@ module HtmlSelectorsHelpers
   #
   def select_date(dateX, options = {})  
       raise ArgumentError, 'from is a required option' if options[:from].blank?
-      print dateX
       field = options[:from]
       date = Date.parse(dateX)
       select date.year.to_s,               :from => "#{field}_1i"
