@@ -19,7 +19,7 @@ class MoviesController < ApplicationController
       sort    = session[:sort]
       redirect_to movies_path(:sort => sort, :ratings => ratings)
     end
-      
+    
     case sort
     when 'title'
       ordering,@title_header = {:order => :title}, 'hilite'
@@ -28,7 +28,7 @@ class MoviesController < ApplicationController
       ordering,@date_header = {:order => :release_date}, 'hilite'
       session[:sort] = sort
     end
-    
+
     @all_ratings = Movie.all_ratings
     @selected_ratings = params[:ratings] || {}
     
@@ -43,7 +43,7 @@ class MoviesController < ApplicationController
     @movies = Movie.find_all_by_rating(@selected_ratings.keys, ordering)
   end
 
-  
+
   
   def new
     # default: render 'new' template
