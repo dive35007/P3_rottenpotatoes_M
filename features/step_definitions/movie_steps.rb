@@ -81,6 +81,6 @@ end
 Then /I should see all of the movies/ do
   #  ensure that that e1 occurs before e2.
   #  page.content  is the entire content of the page as a string.
-  rows = page.all('tr').size
-  rows.should == 11
+  rows = page.all(:xpath, "//table[@id='movies']/tbody//tr").size
+  rows.should == Movie.all.size
 end

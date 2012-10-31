@@ -2,7 +2,7 @@ Práctica Ingeniería de Sistemas de Información :: P3
 
   @autor:     Robin Giles Ribera
   @grado:     Tecnologías de las telecomunicaciones
-  @practica:  P3_rottenpotatoes
+  @práctica:  P3_rottenpotatoes
   @fecha:     31 de Octubre de 2012
 
 Implementación de la aplicación "P3_rottenpotatoes":
