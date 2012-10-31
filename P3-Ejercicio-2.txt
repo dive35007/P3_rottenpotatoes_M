@@ -1,0 +1,106 @@
+Práctica Ingeniería de Sistemas de Información :: P3 
+  
+  @autor:     Robin Giles Ribera
+  @grado:     Tecnologías de las telecomunicaciones
+  @práctica:  P3_rottenpotatoes
+  @fecha:     31 de Octubre de 2012
+
+Ejercicio 2
+
+  1.- En el css se define:
+        table#movies th.hilite {
+          background-color: yellow;
+        }
+      Esto indica el "Table Headers" con class 'hilite'
+      
+      Cuando se selecciona el link Title o Release date se pasa como parámetro 
+      :sort => 'title' o "release_date".
+      
+      Y en el movies_controller.rb en las líneas:
+        ordering,@title_header = {:order => :title}, 'hilite'
+        ordering,@date_header = {:order => :release_date}, 'hilite'
+      Se le asigna a las variables @title_header o @date_header valor 'hilite', que el valor de class
+      que se le asigna en el index.html.haml y que consigue reslatar la fila.
+  
+  
+  2.- En el index.html.haml se crean table headers (Movie Title o Release Date) como links :
+      El table header(th) 'Movie Title' tiene como valor de class :class => @title_header
+      Y el table header(th) 'Release Date' tiene valor de class :class => @date_header
+      
+      En el link exite un atributo ":sort" que puede tomar como valor 'title' o 'release_date'
+        = link_to 'Movie Title', movies_path(:sort => 'title', :ratings => @selected_ratings)...
+      
+      En en movies_controller.rb se elige uno de ellos (el que seleccionó el usuario)
+      mediante params[:sort] obtenemos el criterio de ordenación
+      
+      Luego se busca en la base de datos en base al orden deseado y se almacena almacena en @movies.
+      Por último en index.html.haml se crea la lista de películas de @movies
+      
+      Los datos se envía agregándolos a la dirección URL y separándolos en la dirección con
+      un signo de interrogación. El código que hace esto:
+        redirect_to movies_path(:sort => sort, :ratings => ratings)
+      
+      Es RestFul, ya que estos recursos se representan con una URL (por cada nuevo 
+      'sort' tenemos una URL), es decir esta forma de ordenar es sin estado.
+      
+      
+  3.- Al presionar el botón 'Refresh' se envía un formulario (:id => 'ratings_form') GET 
+      movies_path en el que se incluye todos los checkboxes de los 'ratings', cada uno con un id único
+      :id => "ratings_#{rating}". En las líneas de index.html.haml:
+        = check_box_tag "ratings[#{rating}]", 1, @selected_ratings.include?(rating), :id => "ratings_#{rating}"
+        = submit_tag 'Refresh', :id => 'ratings_submit'
+      El presionar "Refresh" enviamos el formulario Get, y el la variable @all_ratings tenemos los check_boxes
+      seleccionados, luego en el movies_controller en la línea:
+        @selected_ratings = Hash[@all_ratings.map {|rating| [rating, rating]}]
+      obtenemos solo los check_boxes seleccionados.
+      
+      Se busca en la base de datos las claves que coincidan con las de dicha variable.
+        @movies = Movie.find_all_by_rating(@selected_ratings.keys, ordering)
+      
+      Los datos se envía agregándolos a la dirección URL (formulario Get) y separándolos de la dirección con 
+      un signo de interrogación.
+      
+      Es RestFul, ya que estos recursos se representan con una URL (por cada 'recurso-checkbox'
+      tenemos una URL), es decir esta forma de filtrar es sin estado.
+      
+      
+  4.- @movies = Movie.find_all_by_rating(@selected_ratings.keys, ordering)
+      Con el método find_all_by_rating se piden solo los seleccionado ratings (selected_ratings) y en el orden 
+      del atributo ordering ('title', 'release_date')
+      
+  Solo se accede en el movies_controller, primero para pedir todos los 'ratings' y
+      guardarlos en la variable @all_ratings
+      Y la segunda vez para buscar por las claves selected_ratings, la cual se guarda
+      en la variable @movies.
+  
+  
+  5.- La primera vez, params[:sort] y params[ratings] son nil, por tanto sort y ordering también son nil,
+      además la variable @selected_ratings se inicializa con todos los ratings (@all_ratings)
+          @selected_ratings = params[:ratings] || {}
+          if @selected_ratings == {}
+            @selected_ratings = Hash[@all_ratings.map {|rating| [rating, rating]}]
+          end
+  
+      Luego en index.html.haml en la línea:
+        check_box_tag "ratings[#{rating}]", 1, @selected_ratings.include?(rating), :id => "ratings_#{rating}"
+      se incluyen todos los checkboxes, listando todas las películas.
+      
+  
+  6.- Mediante el parámetro :sort, en las líneas:
+        = hidden_field_tag :sort, "title" if @title_header
+        = hidden_field_tag :sort, "release_date" if @date_header
+      presionamos "Refresh" (enviamos el formulario Get) y si algunas de estas variables (Movies Title o Release Date)
+      han sido seleccionadas (tendrán valor 'hilite') entonces el parámetro :sort tiene el valor seleccionado 
+      ('title' o 'release_date'), que luego se pasa como parámetro en el movies_controller (además de pasar como
+      parámetro :ratings) donde se elige el orden: 'title' o 'release_date'
+      
+  
+  
+  7.- En el index.html.haml en la línea:
+        = check_box_tag "ratings[#{rating}]", 1, @selected_ratings.include?(rating), :id => "ratings_#{rating}"
+      con la variable @selected_ratings se incluyen todas check_box seleccionadas con un :id ratings...
+      Luego en el movies_controller se extrae este parámetro params[:ratings] (de la misma manera para :sort) teniendo
+      así el filtrado por check_boxes.
+        
+      
+
