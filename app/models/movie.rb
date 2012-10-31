@@ -1,5 +1,5 @@
 class Movie < ActiveRecord::Base
-  attr_accessible :title, :release_date, :rating
+  attr_accessible :title, :release_date, :rating, :description
 
   def self.all_ratings
     %w(G PG PG-13 NC-17 R)
